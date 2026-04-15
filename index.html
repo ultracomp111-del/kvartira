@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Уютная квартира в Ливадии | Отдых в Крыму рядом с морем</title>
+    <meta name="description" content="Сдается уютная квартира в Ливадии, Крым. В шаговой доступности Ливадийский дворец, аквапарк и пляж. Удобное бронирование онлайн." />
+    <meta property="og:title" content="Уютная квартира в Ливадии" />
+    <meta property="og:description" content="Комфортный отдых в Крыму. Рядом Ливадийский дворец и пляж. Жмите, чтобы посмотреть фото и цены!" />
+    <meta property="og:image" content="https://www.livadiyadom.com/photo/03.webp" />
+    <meta property="og:type" content="website" />
+    <script type="module" src="./script.js"></script>
+    <link rel="stylesheet" href="./styles.css" />
+
+    <link rel="shortcut icon" href="./icons/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.webp" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header__inner">
+        <a href="./index.html" class="brand">
+          <span class="brand__logo">Л</span>
+          <div class="brand__text">
+            <span class="brand__title">Аренда квартиры</span>
+            <span class="brand__sub">Ливадия • Ялта • Крым</span>
+          </div>
+        </a>
+
+        <nav class="nav">
+          <div class="nav__links">
+            <a href="#about">О квартире</a>
+            <a href="#gallery">Галерея</a>
+            <a href="#location">Бронь</a>
+            <a href="#faq">Условия</a>
+            <a href="./livadia.html" class="nav__link--alt">Ливадия</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero-main">
+        <div class="container hero-main__container">
+          <div class="hero-main__content">
+            <h1 class="hero__title">Уютная 2-комнатная квартира в самом сердце Ливадии</h1>
+            <p class="hero__subtitle">Две изолированные комнаты и большая кухня-столовая в непосредственной близости от Ливадийского дворца и тенистых аллей. Идеальное место для отдыха.</p>
+            <a href="#contacts" class="btn-main">Забронировать отдых</a>
+          </div>
+          <div class="hero-main__image-wrap">
+            <img src="./icons/dom.png" alt="Отдых в Ливадии — гостевой дом Ливадия Дом рядом с дворцом и парком" class="main-hero-img" />
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="about">
+        <div class="container">
+          <div class="atmosphere-inner">
+            <div class="atmosphere-text">
+              <h2 style="text-align: center; color: #3b3b3c">О квартире и удобствах</h2>
+              <ul class="check-list">
+                <li><b>Просторная планировка:</b> Две изолированные комнаты и большая кухня-столовая, а также уютный балкон.</li>
+                <li><b>Вся необходимая техника:</b> Кондиционер, холодильник, плита, микроволновка, стиральная машина, телевизор, фен и утюг.</li>
+                <li><b>Связь и ТВ:</b> Бесплатный Wi-Fi и телевидение.</li>
+                <li><b>Полный комфорт:</b> Предоставляем чистое постельное белье и полотенца.</li>
+                <li><b>Идеальная локация:</b> В шаговой доступности продовольственные магазины, рестораны, кафе, аптека и остановка транспорта.</li>
+              </ul>
+            </div>
+            <div class="features-grid">
+              <a href="livadia.html#palace" class="f-card">
+                <img src="./icons/palace.webp" alt="Дворец" class="f-card__img" />
+                <p>Дворец</p>
+              </a>
+              <a href="livadia.html#park" class="f-card">
+                <img src="./icons/park.webp" alt="Park" class="f-card__img" />
+                <p>Парк</p>
+              </a>
+              <a href="livadia.html#tropa" class="f-card">
+                <img src="./icons/tropa.webp" alt="Tropa" class="f-card__img" />
+                <p>Солнечная тропа</p>
+              </a>
+              <a href="livadia.html#akvapark" class="f-card">
+                <img src="./icons/akvapark.webp" alt="Akvapark" class="f-card__img" />
+                <p>Аквапарк</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--light" id="gallery">
+        <div class="container">
+          <div class="text-center" style="margin-bottom: 30px">
+            <h2 class="section-title">Фотогалерея</h2>
+
+            <p class="muted" style="display: flex; align-items: center; justify-content: center; gap: 8px">
+              Нажмите на фото, чтобы увеличить и листать
+
+              <dotlottie-wc src="https://lottie.host/31385638-a218-41eb-a390-dbd7d39bd415/4ah6kiCfN2.lottie" style="width: 38px; height: 38px" autoplay loop> </dotlottie-wc>
+            </p>
+          </div>
+
+          <div class="carousel" data-carousel="home">
+            <div class="carousel__viewport">
+              <button class="carousel__btn prev" data-prev>‹</button>
+
+              <div class="carousel__main-click-area skeleton" data-zoom-trigger>
+                <img
+                  src="photo/01.webp"
+                  class="carousel__main-img"
+                  data-main-img
+                  alt="Фото"
+                  onload="
+                    this.classList.add('loaded');
+                    this.parentElement.classList.remove('skeleton');
+                  " />
+              </div>
+
+              <button class="carousel__btn next" data-next>›</button>
+            </div>
+            <div class="carousel__info"><span data-count>1 / 13</span></div>
+            <div class="carousel__thumbs-wrap">
+              <div class="thumbs-scroller" data-thumbs></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="location">
+        <div class="container" id="contacts">
+          <h2 class="section-title" style="text-align: center; margin-bottom: 40px">Контакты и Бронь</h2>
+
+          <div class="booking-grid-wrapper">
+            <div class="booking-card">
+              <h3 class="card-title">Оставить заявку</h3>
+              <form id="booking-form" class="booking-form-integrated">
+                <input type="text" name="name" placeholder="Ваше имя" required />
+                <input type="tel" name="phone" placeholder="Телефон" required />
+
+                <div class="form-row">
+                  <div class="input-group">
+                    <label style="font-size: 12px; color: var(--muted); margin-bottom: 4px; display: block">Заезд</label>
+                    <input type="date" id="check-in" name="date_start" required title="Дата заезда" />
+                  </div>
+                  <div class="input-group">
+                    <label style="font-size: 12px; color: var(--muted); margin-bottom: 4px; display: block">Выезд</label>
+                    <input type="date" id="check-out" name="date_end" required title="Дата выезда" />
+                  </div>
+                </div>
+
+                <select name="guests" class="guests-select">
+                  <option value="1">1 гость</option>
+                  <option value="2" selected>2 гостя</option>
+                  <option value="3">3 гостя</option>
+                  <option value="4">4 гостя (максимум)</option>
+                </select>
+
+                <textarea name="wishes" placeholder="Дополнительные пожелания"></textarea>
+
+                <div id="price-display" class="price-display" style="display: none">Итоговая стоимость: <span id="total-price">0</span> ₽</div>
+
+                <button type="submit" class="btn-main" style="width: 100%; margin-top: auto">📥 Отправить заявку</button>
+              </form>
+            </div>
+
+            <div class="booking-card calendar-card-wrapper">
+              <h3 class="card-title">Свободные даты</h3>
+              <div class="calendar-widget">
+                <div class="calendar-header">
+                  <button id="cal-prev" class="cal-btn" type="button">‹</button>
+                  <div id="cal-month-year" class="cal-title"></div>
+                  <button id="cal-next" class="cal-btn" type="button">›</button>
+                </div>
+                <div class="calendar-weekdays">
+                  <div>Пн</div>
+                  <div>Вт</div>
+                  <div>Ср</div>
+                  <div>Чт</div>
+                  <div>Пт</div>
+                  <div>Сб</div>
+                  <div>Вс</div>
+                </div>
+                <div id="calendar-days" class="calendar-days"></div>
+                <div class="calendar-legend">
+                  <span class="legend-item"><span class="legend-color legend-free"></span> Свободно</span>
+                  <span class="legend-item"><span class="legend-color legend-booked"></span> Занято</span>
+                  <span class="legend-item"><span class="legend-color legend-selected"></span> Выбрано</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="booking-grid-wrapper">
+            <div class="booking-card">
+              <h3 class="card-title">Контакты</h3>
+              <div class="contacts-content">
+                <p class="contact-label" style="font-size: medium">Контактное лицо:</p>
+                <p class="contact-text" style="color: var(--muted)">Анатолий</p>
+                <p class="contact-label" style="font-size: medium">Адрес:</p>
+                <p class="contact-text" style="color: var(--muted)">Ялта, пгт. Ливадия, ул. Батурина 26</p>
+
+                <div class="contact-socials">
+                  <p class="contact-label">Связь:</p>
+                  <a href="https://wa.me/700000000" class="social-icon wa" target="_blank" aria-label="WhatsApp">
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                      <path
+                        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                    </svg>
+                  </a>
+
+                  <a href="https://t.me/ваш_логин" class="social-icon tg" target="_blank" aria-label="Telegram">
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.14-.26.26-.53.26l.202-3.04 5.514-4.98c.24-.213-.054-.33-.37-.12L8.91 14.16l-2.94-.92c-.64-.2-.65-.64.13-.95l11.5-4.43c.53-.19.99.12.794.961z" />
+                    </svg>
+                  </a>
+                </div>
+                <a href="tel:+70000000000" class="contact-link">+7 (000) 000-00-00</a>
+              </div>
+            </div>
+
+            <div class="booking-card map-card">
+              <h3 class="card-title">Мы на карте</h3>
+              <div class="map-wrapper" style="flex-grow: 1; display: flex; flex-direction: column; margin-top: 0">
+                <a href="https://yandex.com/maps/?ll=34.147352%2C44.474560&mode=routes&rtext=~44.472434%2C34.143454&rtt=comparison" target="_blank" class="static-map">
+                  <div class="static-map__label">Открыть на Картах</div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--light" id="faq">
+        <div class="container">
+          <div class="text-center" style="margin-bottom: 30px">
+            <h2 class="section-title">Часто задаваемые вопросы</h2>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary class="faq-summary">Возможна ли помесячная аренда?</summary>
+              <div class="faq-content">Нет, квартира сдается только посуточно. Помесячная аренда не предусмотрена.</div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">Есть ли парковка на территории?</summary>
+              <div class="faq-content">Да, у нас есть закрытая парковка прямо на территории дома. Парковка для гостей бесплатная.</div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">Можно ли привести домашних животных?</summary>
+              <div class="faq-content">К сожалению, в доме не разрешены домашние животные для сохранения комфорта всех гостей.</div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">Какие услуги включены в стоимость?</summary>
+              <div class="faq-content">В стоимость включены: проживание, доступ к Wi-Fi, кондиционер, постельное белье и полотенца. Завтрак оплачивается отдельно.</div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">Как можно забронировать номер?</summary>
+              <div class="faq-content">Вы можете забронировать номер через форму выше, позвонить нам в Telegram/WhatsApp или написать на почту. Мы подтвердим вашу бронь в течение часа.</div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">Далеко ли до Ливадийского дворца?</summary>
+              <div class="faq-content">Квартира находится в непосредственной близости от Ливадийского дворца, его тенистых аллей и знаменитой «Солнечной тропы».</div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">Далеко ли до Ливадийского пляжа?</summary>
+              <div class="faq-content">
+                Квартира находится в непосредственной близости от Ливадийского пляжа. Ливадийская набережная сейчас на реконструкции — мы за обновление и комфорт! А пока наши гости с удовольствием посещают соседние чистые пляжи (например, "Дельфин"), до которых можно прогуляться по парку или быстро доехать на электрокаре.
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer-simple">
+      <div class="container text-center">
+        <p class="muted">© <span data-year>2026</span> • Ливадия, Ялта</p>
+      </div>
+    </footer>
+
+    <div id="fs-overlay" class="fs-overlay">
+      <span class="fs-close">&times;</span>
+      <button class="fs-nav fs-prev" id="fs-prev">‹</button>
+      <img class="fs-img" id="fs-img" />
+      <button class="fs-nav fs-next" id="fs-next">›</button>
+    </div>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.10/dist/dotlottie-wc.js" type="module"></script>
+  </body>
+</html>

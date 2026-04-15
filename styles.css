@@ -1,0 +1,643 @@
+/* ======================== */
+/* ЦВЕТОВЫЕ ПЕРЕМЕННЫЕ (ВКЛЮЧАЯ ДАРК МОД) */
+/* ======================== */
+:root {
+    --bg: #fbfbfd;
+    --surface: #ffffff;
+    --surface-alt: #f5f5f7;
+    --text: #3b3b3c;
+    --muted: #6e6e73;
+    --accent: #0071e3;
+    --line: rgba(0,0,0,0.08);
+    --radius: 24px;
+    
+    /* Цвета календаря */
+    --cal-free-bg: #e8f5e9;
+    --cal-free-text: #1b5e20;
+    --cal-free-border: #c8e6c9;
+    --cal-booked-bg: #f5f5f7;
+    --cal-booked-text: #a1a1a6;
+    
+    /* Тень карточек */
+    --shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+[data-theme="dark"] {
+    --bg: #000000;
+    --surface: #1c1c1e;
+    --surface-alt: #2c2c2e;
+    --text: #f5f5f7;
+    --muted: #98989d;
+    --line: rgba(255,255,255,0.15);
+    
+    --cal-free-bg: rgba(27, 94, 32, 0.3);
+    --cal-free-text: #81c784;
+    --cal-free-border: rgba(129, 199, 132, 0.2);
+    --cal-booked-bg: #2c2c2e;
+    --cal-booked-text: #6e6e73;
+    
+    --shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* ======================================= */
+/* БАЗОВЫЕ НАСТРОЙКИ */
+/* ======================================= */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { 
+    scroll-behavior: smooth; 
+    overflow-y: scroll; 
+} 
+body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; 
+    background: var(--bg); 
+    color: var(--text); 
+    line-height: 1.5; 
+    width: 100%;
+    overflow-x: clip;
+    transition: background-color 0.3s, color 0.3s; 
+}
+.container { width: min(1000px, 92%); margin-inline: auto; }
+.text-center { text-align: center; }
+
+/* Header & Theme - Smart Sticky */
+.header { 
+    position: sticky; 
+    top: 0; 
+    z-index: 100; 
+    background: var(--surface); 
+    border-bottom: 1px solid var(--line); 
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.3s, opacity 0.4s ease-out; 
+}
+@supports (backdrop-filter: blur(20px)) { .header { background: rgba(var(--surface), 0.8); backdrop-filter: blur(20px); } }
+
+.header--hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+.header__inner { display: flex; flex-direction: column; align-items: center; padding: 8px 0; gap: 8px; }
+.brand { display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; }
+.brand__logo { background: #3b3b3c; color: #fefefe; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; font-weight: bold; font-size: 14px; flex-shrink: 0; }
+.brand__text { display: flex; flex-direction: row; gap: 4px; align-items: baseline; }
+.brand__title {color:#3b3b3c; font-weight: 700; font-size: 14px; line-height: 1.2; }
+.brand__sub {display: inline; font-size: 11px; color: var(--muted); line-height: 1.2; }
+.nav {display: flex; align-items: center; gap: 15px; width: 100%; justify-content: center; }
+.nav__links {display: flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 14px; justify-content: center; }
+.nav a {text-decoration: none; color: var(--text); font-size: 14px; font-weight: 500; }
+.nav__link--alt { color: var(--accent) !important; font-weight: 600 !important; }
+.theme-btn { background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px; border-radius: 50%; transition: 0.2s; }
+.theme-btn:hover { background: var(--surface-alt); }
+
+/* Weather Widget */
+.weather-widget { background: var(--surface-alt); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; gap: 8px; border: 1px solid var(--line); }
+.weather-divider { color: var(--muted); opacity: 0.5; }
+
+/* Hero */
+.hero-main { padding: 40px 0; }
+.hero-main__container { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; }
+@media (min-width: 850px) { .hero-main__container { flex-direction: row; text-align: left; } }
+.hero__title { font-size: clamp(28px, 5vw, 52px); font-weight: 800; line-height: 1.1; margin-bottom: 15px; }
+.hero__subtitle { font-size: 18px; color: var(--muted); margin-bottom: 25px; }
+.btn-main { display: inline-block; background: var(--accent); color: #fff; padding: 14px 28px; border-radius: 30px; text-decoration: none; font-weight: 600; transition: 0.2s; border: none; }
+.btn-main:active { transform: scale(0.96); }
+.hero-main__image-wrap { width: 100%; max-width: 400px; aspect-ratio: 1/1; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.main-hero-img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Grid */
+.section { padding: 60px 0; scroll-margin-top: 100px; }
+.section--light { background: var(--surface-alt); border-radius: 30px; width: calc(100% - 32px); margin: 0 auto; }
+
+/* Atmosphere */
+.atmosphere-inner { display: flex; flex-direction: column; gap: 30px; align-items: flex-start; }
+@media (min-width: 1025px) {
+    .atmosphere-inner { flex-direction: row; justify-content: space-between; align-items: center; }
+    .atmosphere-text { flex: 1; max-width: 500px; }
+    .features-grid { flex: 1; display: grid; grid-template-columns: repeat(2, 1fr) !important; max-width: 360px; gap: 15px; margin-left: auto; }
+}
+.check-list { list-style: none !important; padding: 0; margin-top: 20px; }
+.check-list li { margin-bottom: 12px; padding-left: 30px; position: relative; font-size: 16px; line-height: 1.4; color: var(--text); }
+.check-list li::before { content: "✓"; position: absolute; left: 0; top: 0; color: #2196f3; font-weight: 900; font-size: 18px; }
+
+/* Features Grid */
+.features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; }
+@media (max-width: 1024px) {
+    .features-grid { max-width: 500px; margin: 0 auto; }
+}
+@media (max-width: 767px) {
+    .features-grid { max-width: 400px; margin: 0 auto; }
+}
+@media (max-width: 450px) {
+    .features-grid { max-width: 300px; margin: 0 auto; }
+}
+
+.f-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px; text-align: center; box-shadow: var(--shadow); transition: all 0.3s ease; 
+    display: block; text-decoration: none; color: inherit; overflow: hidden; position: relative; aspect-ratio: 16/12;
+}
+.f-card:hover { transform: translateY(-4px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+.f-card__img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit; }
+.f-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%); pointer-events: none; border-radius: inherit;
+}
+.f-card p {
+    font-size: 15px; font-weight: 700; color: white; margin: 0; line-height: 1.3;
+    position: absolute; bottom: 0; left: 0; width: 100%; padding: 12px; z-index: 2;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* FAQ Accordion */
+.faq-list { max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px;text-align: center; }
+.faq-item { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); transition: 0.3s; }
+.faq-summary { padding: 18px 20px; font-weight: 600; cursor: pointer; list-style: none; position: relative; user-select: none; }
+.faq-summary::-webkit-details-marker { display: none; }
+.faq-summary::after { content: "+"; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 20px; color: var(--accent); transition: 0.3s; }
+.faq-item[open] .faq-summary::after { content: "−"; }
+.faq-content { padding: 0 20px 20px 20px; color: var(--muted); border-top: 1px solid transparent; }
+.faq-item[open] .faq-content { border-top-color: var(--line); padding-top: 15px; }
+
+/* Carousel */
+.carousel { background: var(--surface); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); overscroll-behavior-x: contain; touch-action: pan-y; width: 100%; min-width: 0; }
+.carousel__viewport { position: relative; aspect-ratio: 16/9; background: #000; }
+.carousel__main-click-area { width: 100%; height: 100%; cursor: zoom-in; }
+.carousel__main-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s ease; }
+.carousel__btn { animation: pulse 2s infinite; position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%; border: none; background: rgba(255,255,255,0.9); cursor: pointer; z-index: 5; font-size: 24px; color: #000; }
+.carousel__btn.prev { left: 10px; }
+.carousel__btn.next { right: 10px; }
+.thumbs-scroller { display: flex; gap: 8px; padding: 12px; overflow-x: auto; scrollbar-width: none; }
+.thumb-img { width: 60px; height: 45px; border-radius: 6px; object-fit: cover; opacity: 0.4; flex-shrink: 0; cursor: pointer; transition: 0.2s; }
+.thumb-img.active { opacity: 1; box-shadow: 0 0 0 2px var(--accent); }
+.carousel__btn:hover {
+    animation: pulse 1s infinite; /* Пульсирует только когда навели курсор */
+}
+/* ZOOOOM */
+.fs-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: #000; display:none; z-index: 2000; align-items:center; justify-content:center; }
+.fs-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.fs-close { position: absolute; top:20px; right:20px; color:#fff; font-size:40px; cursor:pointer; z-index: 10; }
+.fs-nav { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: #fff; font-size: 50px; cursor: pointer; padding: 20px; z-index: 10; }
+.fs-prev { left: 0; }
+.fs-next { right: 0; }
+
+.footer-simple { padding: 40px 0; border-top: 1px solid var(--line); margin-top: 40px; }
+
+/* Десктоп Шапка */
+@media (min-width: 1000px) {
+    .header__inner { flex-direction: row; justify-content: space-between; align-items: center; padding: 12px 0; gap: 10px; }
+    .brand__logo { width: 32px; height: 32px; font-size: 16px; }
+    .brand__title { font-size: 15px; }
+    .brand__sub { font-size: 12px; }
+    .brand__text { flex-direction: row; gap: 4px; }
+    .nav { width: auto; justify-content: flex-end; }
+    .nav__links { gap: 15px; font-size: 15px; justify-content: flex-end; }
+    .nav a { font-size: 18px; }
+}
+
+@media (max-width: 1024px) {
+    .weather-widget { display: none; }
+    .nav__links { gap: 23px; }
+    .nav a { font-size: 17px; }
+}
+@media (max-width: 450px) {
+    .nav__links { gap: 15px; }
+    .nav a { font-size: 15px; }
+}
+@media (max-width: 362px) {
+    .nav__links { gap: 12px; }
+    .nav a { font-size: 15px; }
+}
+
+/* Grid Split Секции (О доме / Галерея) */
+.grid-split { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin-bottom: 20px; }
+.grid-split--reverse { direction: rtl; }
+.grid-split--reverse .grid-split__text, .grid-split--reverse .carousel { direction: ltr; }
+.grid-split__text { display: flex; flex-direction: column; gap: 20px; }
+.grid-split__text h2 { font-size: clamp(24px, 4vw, 32px); margin: 0; line-height: 1.2; }
+.grid-split__text p { font-size: 16px; line-height: 1.6; margin: 0; text-align: justify !important; text-justify: inter-word; hyphens: auto; -webkit-hyphens: auto; -ms-hyphens: auto;}
+
+@media (max-width: 1024px) { .grid-split { gap: 40px; } }
+@media (max-width: 768px) {
+    .grid-split, .grid-split--reverse { grid-template-columns: 1fr; gap: 30px; direction: ltr; }
+    .grid-split__text { order: 2; text-align: center; }
+    .carousel { order: 1; }
+}
+
+section[id] { scroll-margin-top: 80px; }
+.section-title { text-align: center !important; margin-left: 0 !important; padding-left: 0 !important; }
+
+@keyframes pulse { 0% { transform: translateY(-50%) scale(1); opacity: 0.7; } 50% { transform: translateY(-50%) scale(1.1); opacity: 0.4; } 100% { transform: translateY(-50%) scale(1); opacity: 0.7; } }
+
+@media (max-width: 1030px) {
+    .carousel__btn { font-size: 0 !important; color: transparent !important; display: flex !important; flex-direction: column !important; align-items: center; justify-content: center; position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; width: 80px; background: none !important; border: none !important; opacity: 1; cursor: pointer; }
+    .carousel__btn::before { content: 'SWIPE'; display: block; font-size: 25px; font-family: sans-serif; font-weight: bold; letter-spacing: 1.5px; color: #ffffff; margin-bottom: 2px; visibility:visible; text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.8), 0px 0px 10px rgba(0, 0, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.8); }
+    .carousel__btn::after { display: block; font-size: 65px; font-family: serif; font-weight: bold; color: #ffffff; visibility: visible; line-height: 1; text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.8), 0px 0px 10px rgba(0, 0, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.8); }
+    .carousel__btn.prev::after { content: '«'; }
+    .carousel__btn.next::after { content: '»'; }
+    .carousel__btn.prev { left: 15px; }
+    .carousel__btn.next { right: 15px; }
+}
+@media (max-width: 550px) {
+	.carousel__btn::before{ font-size: 20px; }
+	.carousel__btn::after{ font-size: 35px; }
+	.carousel__btn.prev { left: 0px; }
+    .carousel__btn.next { right: 0px; }
+}
+
+/* ========================================================================= */
+/* НОВАЯ ИДЕАЛЬНАЯ СЕТКА: ФОРМА + КАЛЕНДАРЬ + КОНТАКТЫ + КАРТА (ИЗМЕНЕНИЯ)   */
+/* ========================================================================= */
+
+.booking-grid-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Ровно пополам */
+    gap: 30px;
+    align-items: stretch; /* Растягивает карточки по высоте самой высокой */
+    max-width: 1000px;
+    margin: 0 auto 30px auto;
+}
+
+.booking-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    text-align: center;
+    color: var(--text);
+}
+
+/* ФОРМА И ЭЛЕМЕНТЫ ВВОДА */
+.booking-form-integrated {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.booking-form-integrated input, 
+.booking-form-integrated select, 
+.booking-form-integrated textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface-alt);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.booking-form-integrated input:focus, 
+.booking-form-integrated select:focus, 
+.booking-form-integrated textarea:focus {
+    border-color: var(--accent);
+}
+
+.booking-form-integrated textarea {
+    flex-grow: 1; /* Растягивает текстовое поле до низа */
+    min-height: 80px;
+    resize: none;
+}
+
+.guests-select { cursor: pointer; }
+
+.price-display {
+    background: var(--accent);
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 700;
+    margin-top: auto;
+}
+
+/* КАЛЕНДАРЬ */
+.calendar-widget {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Чтобы календарь занимал всю карточку */
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.cal-title { font-weight: 700; font-size: 16px; }
+.cal-btn {
+    background: var(--surface-alt);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 20px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    color: var(--text);
+    transition: 0.2s;
+}
+.cal-btn:hover { background: var(--line); }
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    flex-grow: 1; /* Растягивает сетку по высоте */
+}
+
+/* ИСПРАВЛЕНИЕ: Убрали aspect-ratio: 1/1, чтобы даты не выезжали из сетки на широких экранах */
+.cal-day {
+    min-height: 45px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+    border: 1px solid transparent;
+    padding: 4px 0;
+	font-weight: bold;
+}
+
+.cal-day.empty { cursor: default; }
+.cal-day.free { background: var(--cal-free-bg); color: var(--cal-free-text); }
+.cal-day.booked { background: var(--cal-booked-bg); color: var(--cal-booked-text); text-decoration: line-through; cursor: not-allowed; }
+.cal-day.selected { background: var(--accent) !important; color: white !important; }
+.cal-day.in-range { background: rgba(0, 113, 227, 0.1); }
+.cal-day .price { font-size: 12px; margin-top: 2px; color:#0071e3; font-weight: bold;  }
+
+/* ЛЕГЕНДА С ЦВЕТНЫМИ КВАДРАТАМИ */
+.calendar-legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; /* Чтобы не слипались, если мало места */
+    gap: 15px;
+    margin-top: 20px;
+    font-size: 12px;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; color: var(--text); }
+.legend-color { width: 12px; height: 12px; border-radius: 3px; }
+
+.legend-free { background: var(--cal-free-bg); border: 1px solid var(--cal-free-border); } /* Зеленый */
+.legend-booked { background: #ffffff; border: 1px solid var(--muted); } /* Белый */
+.legend-selected { background: var(--accent); border: 1px solid var(--accent); } /* Синий */
+
+/* КОНТАКТЫ */
+.contacts-content {
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.contact-label { font-weight: 700; margin-bottom: 5px; font-size: larger;}
+.contact-link { color: var(--accent); font-weight: 700; font-size: 22px; text-decoration: none;display:block;margin-top: 15px;}
+
+/* КАРТА */
+.map-card { padding: 15px; } /* Чуть меньше отступов для самой карты */
+.static-map {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    min-height: 250px;
+    background-image: url('./icons/map.jpg');
+    background-size: cover;
+    background-position: center;
+    text-decoration: none;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.static-map:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+.static-map__label {
+    position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); z-index: 10; white-space: nowrap; width: max-content;
+    background: var(--surface); color: var(--text); padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: background 0.3s;
+}
+.static-map:hover .static-map__label { background: var(--accent); color: #fff; }
+
+
+/* ======================================== */
+/* Стили для иконок телеграм и востапп */
+/* ======================================== */
+
+/* Контейнер для иконок */
+.contact-socials {
+    display: flex;
+    justify-content: center; /* Центрируем, так как у вас .contacts-content тоже в центре */
+    gap: 15px;               /* Расстояние между кнопками */
+    margin-top: 20px;
+}
+.contact-label{
+	 display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Общие стили для иконок */
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: var(--surface-alt); /* Светлый фон */
+    color: var(--text);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.social-icon svg {
+    width: 18px;            /* Уменьшаем размер самой иконки внутри круга */
+    height: 18px;
+}
+/* Эффект при наведении */
+.social-icon:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+/* Цвета брендов при наведении */
+.social-icon.wa:hover {
+    background-color: #25D366; /* Зеленый WhatsApp */
+    color: white;
+}
+
+.social-icon.tg:hover {
+    background-color: #0088cc; /* Синий Telegram */
+    color: white;
+}
+
+/* ========================================= */
+/* Скелетон */
+/* ========================================= */
+/* Базовый вид скелетона */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: #e2e2e7 !important; /* Светло-серый фон (вместо черного) */
+  border-radius: 18px; /* Чтобы углы совпадали с фото */
+}
+
+/* Анимация перелива */
+.skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.4) 20%,
+    rgba(255, 255, 255, 0.6) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite; /* Назовем анимацию shimmer */
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Плавное проявление картинки */
+.carousel__main-img {
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.carousel__main-img.loaded {
+  opacity: 1;
+}
+
+/* ========================================================================= */
+/* АДАПТИВНОСТЬ ДЛЯ БЛОКОВ БРОНИРОВАНИЯ И КАРТЫ                              */
+/* ========================================================================= */
+
+/* Планшеты (сохраняем два ряда, но делаем шрифты/отступы компактнее, чтобы влезало) */
+@media (max-width: 900px) {
+    .booking-grid-wrapper { 
+		gap: 15px;
+		width: 100%;
+		padding: 0 10px; 
+	}
+    .booking-card { padding: 15px; }
+    .card-title { font-size: 16px; margin-bottom: 12px; }
+    
+    .booking-form-integrated input, 
+    .booking-form-integrated select, 
+    .booking-form-integrated textarea { padding: 10px; font-size: 13px; }
+    
+    .cal-day { font-size: 12px; min-height: 38px; }
+    .cal-day .price { font-size: 8px; }
+}
+
+/* Мобильные телефоны (схлопываем в один столбец ТОЛЬКО с 650px) */
+@media (max-width: 650px) {
+    .booking-grid-wrapper {
+        grid-template-columns: 1fr; /* Стакаем в один столбец */
+        gap: 10px;
+		width: 100%;
+		padding: 0 30px;
+    }
+    .calendar-card-wrapper {
+        order: -1; /* На мобильном календарь ставим ВЫШЕ формы для удобства */
+    }
+    .form-row {
+        grid-template-columns: 1fr; /* Инпуты заезда/выезда друг под другом */
+    }
+}
+
+@media (max-width: 500px) {
+    .booking-grid-wrapper {
+        grid-template-columns: 1fr; /* Стакаем в один столбец */
+        gap: 10px;
+		width: 100%;
+    	padding: 0 10px;
+		
+    }
+
+    .calendar-card-wrapper {
+        order: -1; /* На мобильном календарь ставим ВЫШЕ формы для удобства */
+    }
+    .form-row {
+        grid-template-columns: 1fr; /* Инпуты заезда/выезда друг под другом */
+    }
+}
+
+@media (max-width: 440px) {
+    .booking-grid-wrapper {
+        grid-template-columns: 1fr; /* Стакаем в один столбец */
+        gap: 10px;
+		width: 100%;
+    	padding: 0px 10px;  
+    }
+	.booking-card { 
+		padding: 5px 10px;
+		width: 100%;
+	 }
+
+    .calendar-card-wrapper {
+        order: -1; /* На мобильном календарь ставим ВЫШЕ формы для удобства */
+    }
+    .form-row {
+        grid-template-columns: 1fr; /* Инпуты заезда/выезда друг под другом */
+    }
+}
+
+/* Делаем так, чтобы инпуты не работали как распорки */
+.input-group {
+    flex: 1;
+    min-width: 0; /* КРИТИЧНО ДЛЯ IOS: Разрешаем блоку сжиматься */
+    width: 100%;
+}
+
+.input-group input[type="date"] {
+    width: 100%;
+    min-width: 0; /* КРИТИЧНО ДЛЯ IOS: Ломает упрямство Safari */
+    box-sizing: border-box;
+    -webkit-appearance: none; /* Сбрасываем жесткие системные стили Apple */
+}
+
+/* На мобильных экранах ставим их строго друг под друга */
+@media (max-width: 650px) {
+    .form-row {
+        display: flex !important;
+        flex-direction: column !important; /* Даты будут друг под другом */
+        width: 100% !important;
+        gap: 10px;
+    }
+}
