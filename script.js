@@ -1,4 +1,4 @@
-import { sendTelegramMessage } from './api/telegram.js';
+import { sendTelegramMessage } from './api/mail.js';
 
 // ==========================================
 // 1. КОНФИГ БРОНИРОВАНИЯ И ЦЕН
@@ -31,6 +31,33 @@ function setImgSrc(imgElement, path) {
 	};
 }
 
+function parseBookingDate(value) {
+	if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+	const [y, m, d] = value.split('-').map(Number);
+	const dt = new Date(y, m - 1, d);
+	if (dt.getFullYear() !== y || dt.getMonth() !== m - 1 || dt.getDate() !== d) return null;
+	return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+}
+
+function isBookingDateBooked(dateStr) {
+	const month = parseInt(dateStr.slice(5, 7), 10);
+	return MY_BOOKINGS.bookedFullMonths.includes(month) || MY_BOOKINGS.bookedDates.includes(dateStr);
+}
+
+function isBookingRangeValid(start, end) {
+	if (!start || !end || end <= start) return false;
+	const startDt = new Date(start);
+	const endDt = new Date(end);
+	for (let d = new Date(startDt); d < endDt; d.setDate(d.getDate() + 1)) {
+		const y = d.getFullYear();
+		const m = d.getMonth() + 1;
+		const day = d.getDate();
+		const checkDate = `${y}-${String(m).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+		if (MY_BOOKINGS.bookedDates.includes(checkDate)) return false;
+	}
+	return true;
+}
+
 // ==========================================
 // 3. ОСНОВНАЯ ЛОГИКА (Запуск после загрузки DOM)
 // ==========================================
@@ -42,6 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	const checkOutInput = document.getElementById('check-out');
 	const priceDisplay = document.getElementById('price-display');
 	const totalPriceLabel = document.getElementById('total-price');
+	const calendarHint = document.getElementById('calendar-hint');
+
+	let refreshBookingCalendar = null;
 
 	if (calDaysContainer) {
 		let curDate = new Date();
@@ -88,26 +118,18 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		}
 
+		refreshBookingCalendar = () => renderCalendar(currentMonth, currentYear);
+
 		function handleDateClick(dateStr) {
+			clearCalendarHint();
 			if (!selectedStart || (selectedStart && selectedEnd)) {
 				selectedStart = dateStr;
 				selectedEnd = null;
 			} else if (dateStr > selectedStart) {
-				// Проверка, есть ли занятые дни в диапазоне
-				let isRangeValid = true;
-				let start = new Date(selectedStart);
-				let end = new Date(dateStr);
-				for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
-					let checkDate = d.toISOString().split('T')[0];
-					if (MY_BOOKINGS.bookedDates.includes(checkDate)) {
-						isRangeValid = false; break;
-					}
-				}
-
-				if (isRangeValid) {
+				if (isBookingRangeValid(selectedStart, dateStr)) {
 					selectedEnd = dateStr;
 				} else {
-					alert('В выбранном диапазоне есть занятые даты.');
+					showCalendarHint('В выбранном диапазоне есть занятые даты. Выберите другие даты.');
 					selectedStart = dateStr;
 				}
 			} else {
@@ -127,8 +149,10 @@ document.addEventListener('DOMContentLoaded', () => {
 				const end = new Date(selectedEnd);
 				let total = 0;
 				for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
-					const dStr = d.toISOString().split('T')[0];
+					const y = d.getFullYear();
 					const m = d.getMonth() + 1;
+					const day = d.getDate();
+					const dStr = `${y}-${String(m).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 					total += MY_BOOKINGS.specialPrices[dStr] || MY_BOOKINGS.monthlyPrices[m] || MY_BOOKINGS.defaultPrice;
 				}
 				totalPriceLabel.textContent = total.toLocaleString();
@@ -138,6 +162,96 @@ document.addEventListener('DOMContentLoaded', () => {
 				totalPriceLabel.textContent = '0';
 			}
 		}
+
+		function ensureCalendarMonthVisible(dateStr) {
+			if (!dateStr) return;
+			const month = parseInt(dateStr.slice(5, 7), 10);
+			const year = parseInt(dateStr.slice(0, 4), 10);
+			if (MY_BOOKINGS.availableMonths.includes(month)) {
+				currentMonth = month;
+				currentYear = year;
+			}
+		}
+
+		function showCalendarHint(message) {
+			if (!calendarHint) return;
+			calendarHint.textContent = message;
+			calendarHint.classList.add('calendar-hint--error');
+		}
+
+		function clearCalendarHint() {
+			if (!calendarHint) return;
+			calendarHint.textContent = '';
+			calendarHint.classList.remove('calendar-hint--error');
+		}
+
+		function applyBookingDatesFromForm({ showHint = true } = {}) {
+			const start = parseBookingDate(checkInInput?.value || '');
+			const end = parseBookingDate(checkOutInput?.value || '');
+
+			if (showHint) clearCalendarHint();
+
+			if (!start && !end) {
+				selectedStart = null;
+				selectedEnd = null;
+				calculateTotal();
+				renderCalendar(currentMonth, currentYear);
+				return;
+			}
+
+			if (start && isBookingDateBooked(start)) {
+				if (showHint) showCalendarHint('Эта дата заезда занята. Выберите другую.');
+				selectedStart = null;
+				selectedEnd = null;
+				calculateTotal();
+				renderCalendar(currentMonth, currentYear);
+				return;
+			}
+
+			if (end && isBookingDateBooked(end)) {
+				if (showHint) showCalendarHint('Дата выезда недоступна. Выберите другую.');
+				selectedStart = start;
+				selectedEnd = null;
+				if (checkOutInput) checkOutInput.value = '';
+				ensureCalendarMonthVisible(start);
+				calculateTotal();
+				renderCalendar(currentMonth, currentYear);
+				return;
+			}
+
+			if (start && end) {
+				if (end <= start) {
+					if (showHint) showCalendarHint('Дата выезда должна быть позже даты заезда.');
+					selectedStart = start;
+					selectedEnd = null;
+					if (checkOutInput) checkOutInput.value = '';
+				} else if (!isBookingRangeValid(start, end)) {
+					if (showHint) showCalendarHint('В выбранном диапазоне есть занятые даты. Выберите другие даты.');
+					selectedStart = start;
+					selectedEnd = null;
+					if (checkOutInput) checkOutInput.value = '';
+				} else {
+					selectedStart = start;
+					selectedEnd = end;
+				}
+				ensureCalendarMonthVisible(start);
+			} else if (start) {
+				selectedStart = start;
+				selectedEnd = null;
+				ensureCalendarMonthVisible(start);
+			} else {
+				selectedStart = null;
+				selectedEnd = null;
+			}
+
+			calculateTotal();
+			renderCalendar(currentMonth, currentYear);
+		}
+
+		const syncBookingFromDateInputs = () => applyBookingDatesFromForm({ showHint: true });
+
+		checkInInput?.addEventListener('change', syncBookingFromDateInputs);
+		checkOutInput?.addEventListener('change', syncBookingFromDateInputs);
 
 		prevBtn.onclick = () => {
 			currentMonth--; if (currentMonth < 1) { currentMonth = 12; currentYear--; }
@@ -153,41 +267,151 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// --- ФОРМА БРОНИРОВАНИЯ ---
 	const bookingForm = document.getElementById('booking-form');
+	const bookingFormFeedback = document.getElementById('booking-form-feedback');
+	const pdConsentWrap = document.getElementById('pd-consent-wrap');
+	const pdConsent = document.getElementById('pd-consent');
+	const pdConsentLabel = pdConsentWrap?.querySelector('.pd-consent-label');
+
+	function triggerConsentShake() {
+		if (!pdConsentWrap) return;
+		pdConsentWrap.classList.remove('pd-consent-block--shake');
+		void pdConsentWrap.offsetWidth;
+		pdConsentWrap.classList.add('pd-consent-block--shake');
+		pdConsentWrap.addEventListener('animationend', () => {
+			pdConsentWrap.classList.remove('pd-consent-block--shake');
+		}, { once: true });
+	}
+
+	function clearBookingFieldErrors() {
+		if (!bookingForm) return;
+		bookingForm.querySelectorAll('.error-input').forEach((el) => el.classList.remove('error-input'));
+		pdConsentLabel?.classList.remove('pd-consent-label--error');
+		pdConsentWrap?.classList.remove('pd-consent-block--shake');
+	}
+
 	if (bookingForm) {
+		const nameInput = bookingForm.querySelector('[name="name"]');
+		const phoneInput = bookingForm.querySelector('[name="phone"]');
+
+		bookingForm.addEventListener('input', (e) => {
+			const t = e.target;
+			if (t.matches('input, textarea, select')) {
+				t.classList.remove('error-input');
+			}
+			if (bookingFormFeedback && bookingFormFeedback.classList.contains('form-feedback--error')) {
+				bookingFormFeedback.hidden = true;
+				bookingFormFeedback.textContent = '';
+				bookingFormFeedback.className = 'form-feedback';
+			}
+		});
+
+		bookingForm.addEventListener('change', (e) => {
+			const t = e.target;
+			if (t === pdConsent) {
+				pdConsentLabel?.classList.remove('pd-consent-label--error');
+				pdConsentWrap?.classList.remove('pd-consent-block--shake');
+			}
+			if (t.matches('input[type="date"]')) {
+				t.classList.remove('error-input');
+				if (calendarHint) {
+					calendarHint.textContent = '';
+					calendarHint.classList.remove('calendar-hint--error');
+				}
+			}
+			if (bookingFormFeedback && bookingFormFeedback.classList.contains('form-feedback--error')) {
+				bookingFormFeedback.hidden = true;
+				bookingFormFeedback.textContent = '';
+				bookingFormFeedback.className = 'form-feedback';
+			}
+		});
+
 		bookingForm.addEventListener('submit', async (e) => {
 			e.preventDefault();
-			
-			if (!selectedStart || !selectedEnd) {
-				alert("Пожалуйста, выберите даты заезда и выезда в календаре.");
+
+			clearBookingFieldErrors();
+			if (bookingFormFeedback) {
+				bookingFormFeedback.hidden = true;
+				bookingFormFeedback.textContent = '';
+				bookingFormFeedback.className = 'form-feedback';
+			}
+
+			const name = nameInput?.value?.trim() || '';
+			const phone = phoneInput?.value?.trim() || '';
+			const datesOk = Boolean(selectedStart && selectedEnd);
+			const consentOk = Boolean(pdConsent?.checked);
+
+			let firstScrollTarget = null;
+			const markFirst = (el) => {
+				if (el && !firstScrollTarget) firstScrollTarget = el;
+			};
+
+			let hasError = false;
+
+			if (!name) {
+				nameInput?.classList.add('error-input');
+				markFirst(nameInput);
+				hasError = true;
+			}
+			if (!phone) {
+				phoneInput?.classList.add('error-input');
+				markFirst(phoneInput);
+				hasError = true;
+			}
+			if (!datesOk) {
+				checkInInput?.classList.add('error-input');
+				checkOutInput?.classList.add('error-input');
+				markFirst(document.querySelector('.calendar-card-wrapper') || checkInInput);
+				hasError = true;
+			}
+			if (!consentOk) {
+				pdConsentLabel?.classList.add('pd-consent-label--error');
+				triggerConsentShake();
+				markFirst(pdConsentWrap);
+				hasError = true;
+			}
+
+			if (hasError) {
+				if (bookingFormFeedback) {
+					bookingFormFeedback.textContent =
+						'Пожалуйста, заполните обязательные поля и примите соглашение';
+					bookingFormFeedback.classList.add('form-feedback--error');
+					bookingFormFeedback.hidden = false;
+				}
+				firstScrollTarget?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 				return;
 			}
 
 			const submitBtn = bookingForm.querySelector('button[type="submit"]');
 			const originalText = submitBtn.textContent;
-			
+
 			const formData = {
-				name: bookingForm.querySelector('[name="name"]')?.value?.trim() || '',
-				phone: bookingForm.querySelector('[name="phone"]')?.value?.trim() || '',
+				name,
+				phone,
 				guests: bookingForm.querySelector('[name="guests"]')?.value || '1',
 				checkIn: selectedStart,
 				checkOut: selectedEnd,
-				totalPrice: document.getElementById('total-price').textContent + " ₽",
+				totalPrice: document.getElementById('total-price').textContent + ' ₽',
 				message: bookingForm.querySelector('[name="wishes"]')?.value?.trim() || ''
 			};
 
 			submitBtn.disabled = true;
 			submitBtn.textContent = 'Отправляю...';
-			
+
 			const result = await sendTelegramMessage(formData);
-			alert(result.message);
+			if (bookingFormFeedback) {
+				bookingFormFeedback.className = 'form-feedback';
+				bookingFormFeedback.textContent = result.message;
+				bookingFormFeedback.hidden = false;
+				bookingFormFeedback.classList.add(result.success ? 'form-feedback--success' : 'form-feedback--error');
+			}
 			if (result.success) {
 				bookingForm.reset();
 				selectedStart = null;
 				selectedEnd = null;
 				if (priceDisplay) priceDisplay.style.display = 'none';
-				renderCalendar(currentMonth, currentYear); // Обновляем стили календаря
+				refreshBookingCalendar?.();
 			}
-			
+
 			submitBtn.disabled = false;
 			submitBtn.textContent = originalText;
 		});
@@ -292,4 +516,20 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Текущий год
 	const yearSpan = document.querySelector('[data-year]');
 	if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+	const COOKIE_CONSENT_KEY = 'kvartira_cookie_consent_v1';
+	if (!localStorage.getItem(COOKIE_CONSENT_KEY)) {
+		const banner = document.createElement('div');
+		banner.className = 'cookie-banner';
+		banner.setAttribute('role', 'dialog');
+		banner.setAttribute('aria-label', 'Уведомление о cookie');
+		banner.innerHTML =
+			'<p class="cookie-banner__text">Наш сайт использует файлы cookie для улучшения работы. Продолжая использовать сайт, вы соглашаетесь с условиями использования данных.</p>' +
+			'<button type="button" class="cookie-banner__accept">Принять</button>';
+		document.body.appendChild(banner);
+		banner.querySelector('.cookie-banner__accept')?.addEventListener('click', () => {
+			localStorage.setItem(COOKIE_CONSENT_KEY, '1');
+			banner.remove();
+		});
+	}
 });
